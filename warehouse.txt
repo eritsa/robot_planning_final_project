@@ -1,0 +1,20 @@
+Symbols: R
+Initial conditions: Robot(R)
+Goal conditions: Robot(R)
+
+Actions:
+        PickUpMaterial(m,w,r)
+        Preconditions: In(m,w), Warehouse(w), Material(m), Clear(r), Robot(r)
+        Effects: !In(m,w), !Clear(r), In(m,r)
+
+	DropMaterial(m,s,r)
+	Preconditions: In(m,r), Supply(s), Material(m), Robot(r)
+	Effects: !In(m,r)
+
+        Move(r,x,y)
+        Preconditions: NotRobot(x), NotRobot(y), Robot(r), At(r,x)
+        Effects: !At(r,x), At(r,y)
+
+	MoveTo(r,x)
+	Preconditions: NotRobot(x), Robot(r)
+	Effects: At(r,x)
