@@ -9,9 +9,32 @@
 #include <string>
 #include <ctime>
 #include <tuple>
+#include "Astar.cpp"
+#include "mex.h"
 using namespace std;
 
 #define MAX_CAPACITY 0.2
+#define MAP_IN		prhs[0]
+#define ROBOT_IN	prhs[1]
+#define DEPLETE 	prhs[2]
+#define	ACTION_OUT	plhs[0]
+
+class mystream : public std::streambuf
+{
+protected:
+virtual std::streamsize xsputn(const char *s, std::streamsize n) { mexPrintf("%.*s", n, s); return n; }
+virtual int overflow(int c=EOF) { if (c != EOF) { mexPrintf("%.1s", &c); } return 1; }
+};
+class scoped_redirect_cout
+{
+public:
+  scoped_redirect_cout() { old_buf = std::cout.rdbuf(); std::cout.rdbuf(&mout); }
+  ~scoped_redirect_cout() { std::cout.rdbuf(old_buf); }
+private:
+  mystream mout;
+  std::streambuf *old_buf;
+};
+static scoped_redirect_cout mycout_redirect;
 
 class Robot{
 private:
@@ -237,35 +260,87 @@ void print_plan(vector<goal_node*> goal_plan){
 	}
 }
 
-int main(){
-	cout << "Init Robot\n";
-	Robot* r = new Robot();
-	r->update_state(0, 0);
-	cout << "Init Map\n";
-	Map* m = new Map();
-	// m->set_size(8,8);
-	m->add_warehouse_bin("A", 1, 2);
-	m->add_warehouse_bin("A", 2, 4);
-	m->add_warehouse_bin("A", 4, 2);
-	m->add_warehouse_bin("B", 2, 6);
-	m->add_warehouse_bin("B", 5, 2);
-	m->add_warehouse_bin("B", 5, 5);
-	m->add_supply_bin("A", 0, 0);
-	m->add_supply_bin("A", 0, 7);
-	m->add_supply_bin("B", 7, 0);
-	m->add_supply_bin("B", 7, 7);
-	vector<double>depletion;
-	depletion.push_back(0);
-	depletion.push_back(0.1);
-	depletion.push_back(0.1);
-	depletion.push_back(0.2);
-	m->update_supply_level(depletion);
-	cout << "Run Goal Planner\n";
-	vector<goal_node*> goal_plan = goal_planner(m, r);
-	cout << "Goal Plan Size: ";
-	cout << goal_plan.size();
-	cout << "\n";
-	print_plan(goal_plan);
-	return 0;
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray*prhs[]){
+    /* Check for proper number of arguments */    
+    if (nrhs != 3) { 
+	    mexErrMsgIdAndTxt( "MATLAB:planner:invalidNumInputs",
+                "Three input arguments required."); 
+    } else if (nlhs != 1) {
+	    mexErrMsgIdAndTxt( "MATLAB:planner:maxlhs",
+                "One output argument required."); 
 
+	} /* get the dimensions of the map and the map matrix itself*/     
+    int x_size = mxGetM(MAP_IN);
+    int y_size = mxGetN(MAP_IN);
+    double* map = mxGetPr(MAP_IN);
+    /* init map representation */
+    Map* m = new Map();
+    m->set_size(x_size, y_size);
+    for(int i = 0; i < x_size; i++){
+    	for(int j = 0; j < y_size; j++){
+    		double curr_val = map[j*y_size+i];
+    		if(curr_val > 0){
+    			m->add_supply_bin(to_string(abs(curr_val)), i, j);
+    		} else if (curr_val < 0){
+    			m->add_warehouse_bin(to_string(abs(curr_val)), i, j);
+    		}
+    	}
+    }
+    y_size = mxGetN(DEPLETE);
+    double* deplete = mxGetPr(DEPLETE);
+    vector<double>depletion;
+    for(int i = 0; i < y_size; i++){
+    	depletion.push_back(deplete[i]);
+    }
+    m->update_supply_level(depletion);
+    Robot* r = new Robot();
+    double* r_pos = mxGetPr(ROBOT_IN);
+    r->update_state(r_pos[0], r_pos[1]);
+
+    vector<goal_node*> goal_plan = goal_planner(m,r);
+    plhs[0] = mxCreateDoubleMatrix(1, goal_plan.size()*2, mxREAL);
+    double* values = (double*)malloc(sizeof(double)*goal_plan.size()*2);
+    for(int i = 0; i < goal_plan.size(); i++){
+    	values[i*2] = (goal_plan[i]->bin)->x;
+    	values[i*2+1] = (goal_plan[i]->bin)->y;
+    }
+    memcpy(mxGetPr(plhs[0]), values, sizeof(double)*2*goal_plan.size()*2);
+    return;
 }
+
+
+
+
+// TEST CODE
+// int main(){
+// 	cout << "Init Robot\n";
+// 	Robot* r = new Robot();
+// 	r->update_state(0, 0);
+// 	cout << "Init Map\n";
+// 	Map* m = new Map();
+// 	// m->set_size(8,8);
+// 	m->add_warehouse_bin("A", 1, 2);
+// 	m->add_warehouse_bin("A", 2, 4);
+// 	m->add_warehouse_bin("A", 4, 2);
+// 	m->add_warehouse_bin("B", 2, 6);
+// 	m->add_warehouse_bin("B", 5, 2);
+// 	m->add_warehouse_bin("B", 5, 5);
+// 	m->add_supply_bin("A", 0, 0);
+// 	m->add_supply_bin("A", 0, 7);
+// 	m->add_supply_bin("B", 7, 0);
+// 	m->add_supply_bin("B", 7, 7);
+// 	vector<double>depletion;
+// 	depletion.push_back(0);
+// 	depletion.push_back(0.1);
+// 	depletion.push_back(0.1);
+// 	depletion.push_back(0.2);
+// 	m->update_supply_level(depletion);
+// 	cout << "Run Goal Planner\n";
+// 	vector<goal_node*> goal_plan = goal_planner(m, r);
+// 	cout << "Goal Plan Size: ";
+// 	cout << goal_plan.size();
+// 	cout << "\n";
+// 	print_plan(goal_plan);
+// 	return 0;
+
+// }
