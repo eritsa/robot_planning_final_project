@@ -138,7 +138,9 @@ for (int r = 0; r<xsize; r++){
             }
         }
     }
-    
+    if(flag == 0){
+    	return (g[goal->getX()][goal->getY()]);
+    }
     auto midTime = std::chrono::steady_clock::now();
     
 //     for (int r = 0; r<xsize; r++){
@@ -198,9 +200,10 @@ for (int r = 0; r<xsize; r++){
 int main(){
     
     std::cout<<"HI"<<std::endl;
+    bool flag = 0;
     start = new point(0,0);
     goal  = new point(2300,5000);
-    auto p = plan();
+    auto p = plan(flag);
     // for (auto it1 = p.begin(); it1<p.end(); it1++){
     //     for (auto it2 = it1->begin(); it2<it1->end(); it2++){
     //         std::cout<<*it2<<",";

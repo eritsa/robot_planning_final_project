@@ -74,6 +74,7 @@ private:
 	int size_y;
 	vector<bin_node*> warehouse_bins;
 	vector<bin_node*> supply_bins;
+	double** obs;
 public:
 	void set_size(int x, int y){
 		this->size_x = x;

@@ -1,0 +1,25 @@
+inputs to MEX function
+
+map -> 0, 1
+list of machine locations (x, y, type, supply level)
+list of bin locations (x, y, type, supply level)
+
+change Astar code so that it can read the obstacle map
+
+copy A star code so that it can output cost instead of path
+
+change code variables to be machine and bin
+
+output of planner (coords) coods for moving
+output for actions space (x,y locations of actions) (warehouse and the bin)
+(coordsx[warehouse bin]);
+
+
+MATLAB Loop
+call the planner
+MATLAB animation
+Matlab representation (after plan)
+
+one step calc to change supply level 
+(need to reduce supply levels for machine)
+
