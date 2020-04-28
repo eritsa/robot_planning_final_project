@@ -46,8 +46,33 @@ mapE(1:50,end-50:end) = 0;
 imshow(-1*mapE+1)
 
 
-mapE(:,ysize/2-5:ysize/2+5) = 0;
+mapEA = mapE;
+mapEA(:,ysize/2-5:ysize/2+5) = 0;
 figure
-imshow(-1*mapE+1)
+imshow(-1*mapEA+1)
 
 fprintf("number of impassable walls: %d\n",sum(sum(mapE')>=xsize-2))
+
+
+
+f1 = fopen('warehouse.txt','w+')
+
+
+for i = 1:xsize
+    for j = 1:ysize
+        fprintf(f1,'%d  ',mapE(i,j));
+        
+    end
+    fprintf(f1,'\n');
+end
+fclose(f1);
+
+f = fopen('warehouse_with_aisle.txt','w+')
+for i = 1:xsize
+    for j = 1:ysize
+        fprintf(f,'%d  ',mapEA(i,j));
+        
+    end
+    fprintf(f,'\n');
+end
+fclose(f);
