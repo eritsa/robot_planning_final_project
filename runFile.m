@@ -9,11 +9,12 @@ clear, clc, close all
 %        0 0 0 -2 0 0 0 0;4,4
 %        1 0 0 0 0 0 0 2];
 robotpos = [0,0];
-depletion = [0, 0.05, ...
+%depletion = [0, 0.05, ...
              0.1, 0];
 
-%while 1==1         
-    %action = goal_planner(map, robotpos, depletion)
+             
+depletionRate = .001;
+repletionRate = .001;
 load('map.mat')
 load('initialconditions.mat')
 figure('units','normalized','outerposition',[0 0 1 1]);
@@ -33,9 +34,12 @@ end
 hr = text(robotpos(1)+1,robotpos(2)+1,'R','Color', 'm')
 
 
-%todo whileloop, generate plan, etc.
-action = [1:1000;1:1000]'
-binpos = [10,10];
+%todo whileloop, generate plan, output bin and machine positions as well as action list etc.
+
+%while 1==1         
+    %action = goal_planner(map, robotpos, depletion)
+action = [1:1000;1:1000]';
+binpos = [24,24];
 binnum = 4;
 
 
@@ -48,7 +52,7 @@ for j = 1:length(action)
         throw(MException('runFile:invalidMove','next move, position %d,%d does not exist',robotpos(1)+1,robotpos(2)+1))
     end
     %TODO check if at bin location and change machine states
-    if robotpos(1)+1==binpos(1)+1 &&robotpos(2)==binpos(2)
+    if robotpos(1)==binpos(1) &&robotpos(2)==binpos(2)
         fprintf('picking up from bin B%d at position (%d,%d)\n',[bins(binnum,3),robotpos(1)+1,robotpos(2)+1])
         bins(binnum,4) = bins(binnum,4)-.2;
     end
@@ -56,13 +60,13 @@ for j = 1:length(action)
     
     %update supply levels in machines and bins
     for i = 1:length(bins)
-        if bins(i,4)<1-.001
-            bins(i,4) = bins(i,4)+.001;
+        if bins(i,4)<1-repletionRate
+            bins(i,4) = bins(i,4)+repletionRate;
         end
     end
     for i = 1:length(machines)
-        if machines(i,4)>.001
-            machines(i,4) = machines(i,4)-.001;
+        if machines(i,4)>depletionRate
+            machines(i,4) = machines(i,4)-.depletionRate;
         end
     end
     %update drawing
