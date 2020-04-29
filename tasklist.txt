@@ -1,14 +1,15 @@
 inputs to MEX function
 
-map -> 0, 1
-list of machine locations (x, y, type, supply level)
-list of bin locations (x, y, type, supply level)
+goal_planner(double* map, double* robot, double* machine, double* bin)
+(X) map -> 0, 1
+(X) list of machine locations (x, y, type, supply level)
+(X) list of bin locations (x, y, type, supply level)
 
 change Astar code so that it can read the obstacle map
 
 copy A star code so that it can output cost instead of path
 
-change code variables to be machine and bin
+change code variables to be machine and bin --> (Changed it to machine and warehouse (can't name bin, bin is already name of node type))
 
 output of planner (coords) coods for moving
 output for actions space (x,y locations of actions) (warehouse and the bin)

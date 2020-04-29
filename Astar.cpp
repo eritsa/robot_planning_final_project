@@ -9,14 +9,16 @@ int const xsize = 5000;
 int const ysize = 5000;
 
 
-
-bool isValid(int x, int y){
-    if (x<0 or y<0 or x>=xsize or y>=ysize){
+bool isValid(int x, int y, double** obs, int x_size, int y_size){
+    if (x<0 or y<0 or x>=x_size or y>=y_size){
         
         return false;
-
     }
-    return true;
+    if(obs[x][y] == 1){
+        return false;
+    } else {
+        return true;
+    }
 }
 
 
@@ -66,10 +68,13 @@ point *goal;// = new point(10,20);
 
 
 
-std::vector<std::vector<int>> plan(){
+std::vector<std::vector<int>> plan(int x0, int y0, int x1, int y1, int x_size, int y_size, double** obs){
 
 auto startTime = std::chrono::steady_clock::now();
-
+start = new point(x0,y0);
+goal  = new point(x1,y1);
+// double g[xsize][ysize];
+// bool closed[xsize][ysize];
 for (int r = 0; r<xsize; r++){
     for (int c = 0; c<ysize; c++){
         g[r][c] = DBL_MAX;
@@ -123,7 +128,7 @@ for (int r = 0; r<xsize; r++){
             else{
                 cost = 1;
             }
-            if (isValid(potx,poty)) {
+            if (isValid(potx,poty,obs,x_size,y_size)) {
                 
                 //std::cout<<g[potx][poty]<<", "<<g[p.getX()][p.getY()]<<std::endl;
 
@@ -137,9 +142,6 @@ for (int r = 0; r<xsize; r++){
                 }  
             }
         }
-    }
-    if(flag == 0){
-    	return (g[goal->getX()][goal->getY()]);
     }
     auto midTime = std::chrono::steady_clock::now();
     
@@ -172,7 +174,7 @@ for (int r = 0; r<xsize; r++){
         double thisg = DBL_MAX;
         for (int i = 0; i<ndir; i++){
             // std::cout<<dX[i]<<","<<dY[i]<<std::endl;
-            if (isValid(next[0]+dX[i],next[1]+dY[i])){
+            if (isValid(next[0]+dX[i],next[1]+dY[i],obs,x_size,y_size)){
                 if (g[next[0]+dX[i]][next[1]+dY[i]]<thisg){
                     x = next[0]+dX[i];
                     y = next[1]+dY[i];
@@ -197,19 +199,18 @@ for (int r = 0; r<xsize; r++){
     return out;
 
 }
-int main(){
+// int main(){
     
-    std::cout<<"HI"<<std::endl;
-    bool flag = 0;
-    start = new point(0,0);
-    goal  = new point(2300,5000);
-    auto p = plan(flag);
-    // for (auto it1 = p.begin(); it1<p.end(); it1++){
-    //     for (auto it2 = it1->begin(); it2<it1->end(); it2++){
-    //         std::cout<<*it2<<",";
-    //     }
-    //     std::cout<<std::endl;
-    // }
+//     std::cout<<"HI"<<std::endl;
+//     start = new point(0,0);
+//     goal  = new point(2300,5000);
+//     auto p = plan();
+//     // for (auto it1 = p.begin(); it1<p.end(); it1++){
+//     //     for (auto it2 = it1->begin(); it2<it1->end(); it2++){
+//     //         std::cout<<*it2<<",";
+//     //     }
+//     //     std::cout<<std::endl;
+//     // }
 
-    return 0;
-}
+//     return 0;
+// }

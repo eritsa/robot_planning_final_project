@@ -1,0 +1,12 @@
+mex goal_planner.cpp
+map = [0 0 1 1 1 1 0 0 ;
+       0 0 0 0 0 0 0 0 ;
+       1 0 1 1 0 1 1 0 ;
+       1 0 0 1 0 1 1 0 ;
+       1 0 0 1 0 0 1 0 ;
+       1 0 0 0 0 0 1 0 ;
+       0 0 0 0 0 0 0 0];
+robotpos = [0,0];
+depletion = [0, 0.05, ...
+             0.1, 0];
+action = goal_planner(map, robotpos, depletion)
