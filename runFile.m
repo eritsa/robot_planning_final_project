@@ -13,8 +13,8 @@ robotpos = [0,0];
 %              0.1, 0];
 
              
-depletionRate = .001;
-repletionRate = .001;
+depletionRate = .0000001;
+repletionRate = .0000001;
 load('map.mat')
 load('initialconditions.mat')
 figure('units','normalized','outerposition',[0 0 1 1]);
@@ -44,7 +44,7 @@ while(1==1)
     % action = [1:1000;1:1000]';
     % binpos = [24,24];
     binpos= [waypoints(3), waypoints(4)];
-    index = find(bins(:, 1) == waypoints(3) .* bins(:,2) == waypoints(4));
+    index = intersect(find(bins(:, 1) == waypoints(3)),find(bins(:,2) == waypoints(4)));
     binnum = index;
     % binnum = 4;
     
@@ -60,7 +60,8 @@ while(1==1)
         %TODO check if at bin location and change machine states
         if robotpos(1)==binpos(1) &&robotpos(2)==binpos(2)
             fprintf('picking up from bin B%d at position (%d,%d)\n',[bins(binnum,3),robotpos(1)+1,robotpos(2)+1])
-            bins(binnum,4) = bins(binnum,4)-.2;
+            robot_carrying = bins(binnum,4);
+            bins(binnum,4) = 0;
         end
         
         
@@ -92,6 +93,9 @@ while(1==1)
             drawnow
         end
     end
-    fprintf('picking up from bin B%d at position (%d,%d)\n',[bins(binnum,3),robotpos(1)+1,robotpos(2)+1])
-    bins(binnum,4) = bins(binnum,4)-.2;
+    index = intersect(find(machines(:, 1) == waypoints(5)), find( machines(:,2) == waypoints(6)));
+    index
+    fprintf('picking up from bin B%d at position (%d,%d)\n',[machines(index,3),robotpos(1)+1,robotpos(2)+1])
+    min([machines(index,4)+robot_carrying,1])
+    machines(index,4) = min([machines(index,4)+robot_carrying,1])
 end

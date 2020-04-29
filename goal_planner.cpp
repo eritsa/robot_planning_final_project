@@ -13,7 +13,7 @@
 #include "mex.h"
 using namespace std;
 
-#define MAX_CAPACITY 	0.2
+#define MAX_CAPACITY 	1
 #define MAP_IN			prhs[0]
 #define ROBOT_IN		prhs[1]
 #define MACHINE 		prhs[2]
@@ -170,7 +170,7 @@ double compute_goal_heuristic(goal_node* node){
 		// cout<< "Warehouse Heuristic: ";
 		// cout<< node->c/MAX_CAPACITY;
 		// cout << "\n";
-		return node->c/MAX_CAPACITY;
+		return node->c/(node->bin)->supply_level;
 	} else if((node->bin)->bin_type == "machine"){
 		double curr_supply_level = ((node->bin)->supply_level);
 		cout << "Machine Heuristic: ";
