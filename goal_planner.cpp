@@ -385,20 +385,23 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray*prhs[]){
 
     vector<goal_node*> goal_plan = goal_planner(m,r);
 
+    cout << "Goal_planner done\n";
     vector<double> x_plan;
     vector<double> y_plan;
+
     for(int i = 0; i < goal_plan.size()-1; i++){
     	int curr_x = (goal_plan[i]->bin)->x;
     	int curr_y = (goal_plan[i]->bin)->y;
     	int next_x = (goal_plan[i+1]->bin)->x;
     	int next_y = (goal_plan[i+1]->bin)->y;
     	vector<vector<int>> curr_plan = plan(curr_x, curr_y, next_x, next_y, m->get_size_x(), m->get_size_y(), m->get_obs());
-    	cout << curr_plan.size();
     	for(int j = 0; j < curr_plan.size(); j++){
     		x_plan.push_back(curr_plan[j][0]);
     		y_plan.push_back(curr_plan[j][1]);
     	}
     }
+
+    cout << "Final A* done\n";
 
     double* x_plan_db = (double*)malloc(sizeof(double)*x_plan.size());
     double* y_plan_db = (double*)malloc(sizeof(double)*y_plan.size());
@@ -406,6 +409,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray*prhs[]){
     	x_plan_db[i] = x_plan[i];
     	y_plan_db[i] = y_plan[i];
     }
+    cout << "Started mex matrix\n";
     plhs[0] = mxCreateDoubleMatrix(1, x_plan.size(), mxREAL);
     memcpy(mxGetPr(plhs[0]), x_plan_db, sizeof(double)*x_plan.size());
     plhs[1] = mxCreateDoubleMatrix(1, y_plan.size(), mxREAL);
@@ -413,11 +417,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray*prhs[]){
 
     plhs[2] = mxCreateDoubleMatrix(1, goal_plan.size()*2, mxREAL);
     double* values = (double*)malloc(sizeof(double)*goal_plan.size()*2);
+
+    cout << "Ended mex matrix\n";
     for(int i = 0; i < goal_plan.size(); i++){
     	values[i*2] = (goal_plan[i]->bin)->x;
     	values[i*2+1] = (goal_plan[i]->bin)->y;
     }
-    memcpy(mxGetPr(plhs[2]), values, sizeof(double)*2*goal_plan.size()*2);
+    memcpy(mxGetPr(plhs[2]), values, sizeof(double)*goal_plan.size()*2);
+    cout << "Before return\n";
 
     // plhs[0] = mxCreateDoubleMatrix(1, goal_plan.size()*2, mxREAL);
     // double* values = (double*)malloc(sizeof(double)*goal_plan.size()*2);
