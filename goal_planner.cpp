@@ -167,9 +167,9 @@ vector<bin_node*> get_goal_successors(goal_node* node, Map* map){
 
 double compute_goal_heuristic(goal_node* node){
 	if((node->bin)->bin_type == "warehouse"){
-		cout<< "Warehouse Heuristic: ";
-		cout<< node->c/MAX_CAPACITY;
-		cout << "\n";
+		// cout<< "Warehouse Heuristic: ";
+		// cout<< node->c/MAX_CAPACITY;
+		// cout << "\n";
 		return node->c/MAX_CAPACITY;
 	} else if((node->bin)->bin_type == "machine"){
 		double curr_supply_level = ((node->bin)->supply_level);
@@ -298,16 +298,16 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray*prhs[]){
     Map* m = new Map();
     m->set_size(x_size, y_size);
     double** obs = (double**)malloc(sizeof(double)*x_size*y_size);
-    cout << "OBSTACLE MAP: \n";
+    // cout << "OBSTACLE MAP: \n";
     for(int i = 0; i < x_size; i++){
     	double* curr_row = (double*)malloc(sizeof(double)*y_size);
     	for (int j = 0; j < y_size; j++){
     		curr_row[j] = map[i+ x_size * j];
-    		cout << curr_row[j];
-    		cout << " ";
+    		// cout << curr_row[j];
+    		// cout << " ";
     	}
     	obs[i] = curr_row;
-    	cout << "\n";
+    	// cout << "\n";
     }
     m->set_obs(obs);
 
@@ -340,46 +340,46 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray*prhs[]){
     y_size = mxGetN(MACHINE);
     double* machine = mxGetPr(MACHINE);
 
-    cout << "\n";
-    cout << "MACHINE IN: \n";
+    // cout << "\n";
+    // cout << "MACHINE IN: \n";
     for(int i = 0 ; i < y_size; i++){
     	int x = machine[i];
     	int y = machine[i+x_size];
-    	cout << "Coords: ( ";
-    	cout << x;
-    	cout << ", ";
-    	cout << y;
-    	cout << ")";
+    	// cout << "Coords: ( ";
+    	// cout << x;
+    	// cout << ", ";
+    	// cout << y;
+    	// cout << ")";
     	string type = to_string(abs(machine[i+2*x_size]));
-    	cout << "    MATTYPE: ";
-    	cout << type;
+    	// cout << "    MATTYPE: ";
+    	// cout << type;
     	double supply_level = machine[i+3*x_size];
-    	cout << "    SUPPLY LEVEL: ";
-    	cout << supply_level;
-    	cout << "\n";
+    	// cout << "    SUPPLY LEVEL: ";
+    	// cout << supply_level;
+    	// cout << "\n";
     	m->add_machine_bin(type, x, y, supply_level);
     }
     x_size = mxGetM(WAREHOUSE);
     y_size = mxGetN(WAREHOUSE);
-    cout << x_size; cout << y_size;
+    // cout << x_size; cout << y_size;
     double* warehouse = mxGetPr(WAREHOUSE);
-    cout << "\n";
-    cout << "WAREHOUSE IN: \n";
+    // cout << "\n";
+    // cout << "WAREHOUSE IN: \n";
     for(int i = 0; i < x_size; i++){
     	int x = warehouse[i];
     	int y = warehouse[i+x_size*1];
-    	cout << "Coords: ( ";
-    	cout << x;
-    	cout << ", ";
-    	cout << y;
-    	cout << ")";
+    	// cout << "Coords: ( ";
+    	// cout << x;
+    	// cout << ", ";
+    	// cout << y;
+    	// cout << ")";
     	string type = to_string(abs(warehouse[i+x_size*2]));
-    	cout << "    MATTYPE: ";
-    	cout << type;
+    	// cout << "    MATTYPE: ";
+    	// cout << type;
     	double supply_level = warehouse[i+x_size*3];
-    	cout << "    SUPPLY LEVEL: ";
-    	cout << supply_level;
-    	cout << "\n";
+    	// cout << "    SUPPLY LEVEL: ";
+    	// cout << supply_level;
+    	// cout << "\n";
     	m->add_warehouse_bin(type, x, y, supply_level);
     }
 

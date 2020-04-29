@@ -10,7 +10,7 @@ clear, clc, close all
 %        1 0 0 0 0 0 0 2];
 robotpos = [0,0];
 %depletion = [0, 0.05, ...
-             0.1, 0];
+%              0.1, 0];
 
              
 depletionRate = .001;
@@ -38,9 +38,13 @@ hr = text(robotpos(1)+1,robotpos(2)+1,'R','Color', 'm')
 
 %while 1==1         
     %action = goal_planner(map, robotpos, depletion)
-action = [1:1000;1:1000]';
-binpos = [24,24];
-binnum = 4;
+[xplan, yplan, waypoints] = goal_planner(map, robotpos, machines, bins);
+action = [xplan;yplan]';
+%action = [1:1000;1:1000]';
+%binpos = [24,24];
+binpos= [waypoints(3), waypoints(4)];
+index = find(bins(:, 1) == waypoints(3) .* bins(:,2) == waypoints(4));
+binnum = bins(index, 3);
 
 
 for j = 1:length(action)
@@ -66,7 +70,7 @@ for j = 1:length(action)
     end
     for i = 1:length(machines)
         if machines(i,4)>depletionRate
-            machines(i,4) = machines(i,4)-.depletionRate;
+            machines(i,4) = machines(i,4)-depletionRate;
         end
     end
     %update drawing
