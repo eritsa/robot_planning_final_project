@@ -28,11 +28,13 @@ class point{
         int x;
         int y;
         double g;
+        double eps;
     public: 
-        point(int _x, int _y){
+        point(int _x, int _y, double _eps){
             x = _x;
             y = _y;
             g = INT32_MAX;
+            eps = _eps;
         }
 
         void setG(int _g){
@@ -48,7 +50,7 @@ class point{
             return g;
         }
         double getF(point goal){
-            return (abs(x-goal.getX())+abs(y-goal.getY()))*2 + g;
+            return (abs(x-goal.getX())+abs(y-goal.getY()))*eps + g;
 
         }
         
@@ -72,8 +74,9 @@ std::vector<std::vector<int>> plan(int x0, int y0, int x1, int y1, int x_size, i
 memset(g, 0, xsize*ysize*sizeof(int));
 memset(closed,0,xsize*ysize*sizeof(bool));
 auto startTime = std::chrono::steady_clock::now();
-start = new point(x0,y0);
-goal  = new point(x1,y1);
+double eps = 10;
+start = new point(x0,y0,eps);
+goal  = new point(x1,y1,eps);
 // double g[xsize][ysize];
 // bool closed[xsize][ysize];
 for (int r = 0; r<xsize; r++){
@@ -135,7 +138,7 @@ for (int r = 0; r<xsize; r++){
 
                 if (g[potx][poty]>g[p.getX()][p.getY()]+cost and closed[potx][poty]==false){
                     //std::cout<<"added to open"<<std::endl;
-                    point *newP = new point(potx,poty);
+                    point *newP = new point(potx,poty,eps);
                     newP->setG(g[p.getX()][p.getY()]+cost);
                     g[potx][poty]=g[p.getX()][p.getY()]+cost;
                     open.push(*newP);
