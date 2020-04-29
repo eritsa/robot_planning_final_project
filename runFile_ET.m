@@ -25,3 +25,4 @@ warehouse = [1, 2, 1, 1;
 % depletion = [0, 0.05, ...
 %              0.1, 0];
 [xpath, ypath, waypoints] = goal_planner(map, robotpos, machine, warehouse);
+path = [xpath;ypath];

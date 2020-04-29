@@ -69,7 +69,8 @@ point *goal;// = new point(10,20);
 
 
 std::vector<std::vector<int>> plan(int x0, int y0, int x1, int y1, int x_size, int y_size, double** obs){
-
+memset(g, 0, xsize*ysize*sizeof(int));
+memset(closed,0,xsize*ysize*sizeof(bool));
 auto startTime = std::chrono::steady_clock::now();
 start = new point(x0,y0);
 goal  = new point(x1,y1);

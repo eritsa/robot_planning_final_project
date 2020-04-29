@@ -241,10 +241,10 @@ vector<goal_node*> goal_planner(Map* map, Robot* r){
 			int last_x = (top_node->bin)->x;
 			int last_y = (top_node->bin)->y;
 			// Euclidean Distance
-			double dist = sqrt(pow(curr_x-last_x,2) + 
-					           pow(curr_y-last_y,2));
+			// double dist = sqrt(pow(curr_x-last_x,2) + 
+			// 		           pow(curr_y-last_y,2));
 			// AStar Distance
-			// double dist = get_distance(last_x, last_y, curr_x, curr_y, map->get_size_x(), map->get_size_y(), map->get_obs());
+			double dist = get_distance(last_x, last_y, curr_x, curr_y, map->get_size_x(), map->get_size_y(), map->get_obs());
 			curr_node->c = top_node->c + dist;
 			curr_node->h = compute_goal_heuristic(curr_node);
 			curr_node->prev = top_node;
@@ -387,7 +387,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray*prhs[]){
 
     vector<double> x_plan;
     vector<double> y_plan;
-    for(int i = 0; i < 1; i++){
+    for(int i = 0; i < goal_plan.size()-1; i++){
     	int curr_x = (goal_plan[i]->bin)->x;
     	int curr_y = (goal_plan[i]->bin)->y;
     	int next_x = (goal_plan[i+1]->bin)->x;

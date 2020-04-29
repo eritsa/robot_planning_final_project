@@ -7,10 +7,12 @@
 double get_distance(int x0, int y0, int x1, int y1, int x_size, int y_size, double** obs){
 
 auto startTime = std::chrono::steady_clock::now();
+memset(g, 0, xsize*ysize*sizeof(int));
+memset(closed,0,xsize*ysize*sizeof(bool));
 start = new point(x0,y0);
 goal  = new point(x1,y1);
-double g[x_size][y_size];
-bool closed[x_size][y_size];
+// double g[x_size][y_size];
+// bool closed[x_size][y_size];
 int dX[ndir] = {-1, -1, -1,  0,  0,  1, 1, 1};
 int dY[ndir] = {-1,  0,  1, -1,  1, -1, 0, 1};
 for (int r = 0; r<xsize; r++){
