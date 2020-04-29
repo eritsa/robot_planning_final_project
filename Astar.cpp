@@ -5,12 +5,12 @@
 
 
 
-int const xsize = 5000;
-int const ysize = 5000;
+int const xsize = 1000;
+int const ysize = 1000;
 
 
 bool isValid(int x, int y, double** obs, int x_size, int y_size){
-    if (x<0 or y<0 or x>=x_size or y>=y_size){
+    if (x<0 or y<0 or x>=x_size-1 or y>=y_size-1){
         
         return false;
     }

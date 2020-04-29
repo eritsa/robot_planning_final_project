@@ -1,4 +1,4 @@
-
+load('map.mat');
 
 bins = [0,0]
 while length(bins)<21
@@ -13,7 +13,7 @@ bins = [bins,randi([1,4],20,1), ones(20,1)]
 
 machines = [24,24,1,.5;
     999-25,24,2,.75;
-    999-25,999-25,3,.2;
+    999-25,999-25,3,1;
     24,999-25,4,1;]
 
-save('initialconditions','bins','machines')
+save('initialconditions2.mat','bins','machines')

@@ -15,7 +15,7 @@ robotpos = [0,0];
              
 depletionRate = .0001;
 repletionRate = .00005;
-load('map.mat')
+load('map2.mat')
 load('initialconditions2.mat')
 figure('units','normalized','outerposition',[0 0 1 1]);
 imagesc(map'); axis square; colorbar; colormap jet; hold on;
@@ -40,13 +40,12 @@ hr = text(robotpos(1)+1,robotpos(2)+1,'R','Color', 'm')
 %     action = goal_planner(map, robotpos, depletion)
 
 elapsed_time = [];
-count = 0;
+coutn 
 while(1==1)
-    count = count + 1;
     time = tic;
     [xplan, yplan, waypoints] = goal_planner(map, robotpos, machines, bins);
     elapsed_time = [elapsed_time, toc(time)];
-    fprintf("Mean elapsed time %d ms, Iteration: %d\n", [mean(elapsed_time), count]);
+    fprint("Mean elapsed time %d ms", mean(elapsed_time)
     action = [xplan;yplan]';
     % action = [1:1000;1:1000]';
     % binpos = [24,24];
