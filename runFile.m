@@ -40,13 +40,20 @@ hr = text(robotpos(1)+1,robotpos(2)+1,'R','Color', 'm')
 %     action = goal_planner(map, robotpos, depletion)
 
 elapsed_time = [];
+opened = [];
 count = 0;
-while(1==1)
+
+while(count < 10)
     count = count + 1;
     time = tic;
-    [xplan, yplan, waypoints] = goal_planner(map, robotpos, machines, bins);
-    elapsed_time = [elapsed_time, toc(time)];
-    fprintf("Mean elapsed time %d ms, Iteration: %d\n", [mean(elapsed_time), count]);
+    [xplan, yplan, waypoints, output_time] = goal_planner(map, robotpos, machines, bins);
+    %elapsed_time = [elapsed_time; [toc(time), output_time(1), output_time(2)]];
+    elapsed_time = [elapsed_time; [output_time(3), output_time(1), output_time(2)-output_time(1)]];
+    opened = [opened, output_time(4)];
+    fprintf("Mean elapsed total time %d ms, Iteration: %d\n", [mean(elapsed_time(:,1)), count]);
+    fprintf("Mean elapsed task time %d ms, Iteration: %d\n", [mean(elapsed_time(:,2)), count]);
+    fprintf("Mean elapsed path time %d ms, Iteration: %d\n", [mean(elapsed_time(:,3)), count]);
+    fprintf("Task planner nodes opened %d, Iteration: %d\n", [mean(opened), count]);
     action = [xplan;yplan]';
     % action = [1:1000;1:1000]';
     % binpos = [24,24];
@@ -84,7 +91,7 @@ while(1==1)
             end
         end
         %update drawing
-        if(mod(j,5) == 0)
+        if(false)%(mod(j,10)== 0)
             delete(hr);
             hr = text(robotpos(1)+1,robotpos(2)+1,'R','Color', 'm');
             for i= 1:length(machines)
@@ -101,8 +108,9 @@ while(1==1)
         end
     end
     index = intersect(find(machines(:, 1) == waypoints(5)), find( machines(:,2) == waypoints(6)));
-    index
+    index;
     fprintf('picking up from bin B%d at position (%d,%d)\n',[machines(index,3),robotpos(1)+1,robotpos(2)+1])
-    min([machines(index,4)+robot_carrying,1])
-    machines(index,4) = min([machines(index,4)+robot_carrying,1])
+    min([machines(index,4)+robot_carrying,1]);
+    machines(index,4) = min([machines(index,4)+robot_carrying,1]);
 end
+close all;

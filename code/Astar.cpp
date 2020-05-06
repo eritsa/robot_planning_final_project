@@ -75,7 +75,7 @@ std::vector<std::vector<int>> plan(int x0, int y0, int x1, int y1, int x_size, i
 memset(g, 0, xsize*ysize*sizeof(int));
 memset(closed,0,xsize*ysize*sizeof(bool));
 auto startTime = std::chrono::steady_clock::now();
-double eps = 0;
+double eps = 2;
 start = new point(x0,y0,eps);
 goal  = new point(x1,y1,eps);
 // double g[xsize][ysize];

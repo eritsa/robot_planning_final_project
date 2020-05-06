@@ -1,21 +1,12 @@
 clear, clc, close all
 mex goal_planner.cpp
-% map = [1 0 0 0 0 0 0 2;
-%        0 0 0 0 0 0 0 0;
-%        0 -1 0 0 -1 0 0 0;
-%        0 0 0 0 0 0 0 0;
-%        0 0 -1 0 0 0 0 0;
-%        0 0 0 0 0 -2 0 0;
-%        0 0 0 -2 0 0 0 0;4,4
-%        1 0 0 0 0 0 0 2];
-robotpos = [0,0];
-%depletion = [0, 0.05, ...
-%              0.1, 0];
-
-             
+%% Init Robot/Bin Properties
+robotpos = [0,0]; 
 depletionRate = .0001;
 repletionRate = .00005;
-load('map2.mat')
+
+%% Load in map data
+load('map.mat')
 load('initialconditions2.mat')
 figure('units','normalized','outerposition',[0 0 1 1]);
 imagesc(map'); axis square; colorbar; colormap jet; hold on;
@@ -33,19 +24,23 @@ for i = 1:length(bins)
 end
 hr = text(robotpos(1)+1,robotpos(2)+1,'R','Color', 'm')
 
-
-%todo whileloop, generate plan, output bin and machine positions as well as action list etc.
-
-%while 1==1         
-%     action = goal_planner(map, robotpos, depletion)
-
+%% Init result vectors
 elapsed_time = [];
-coutn 
-while(1==1)
+opened = [];
+count = 0;
+
+%% Run planner loop (currently set to 10 iterations)
+while(count < 10)
+    count = count + 1;
     time = tic;
-    [xplan, yplan, waypoints] = goal_planner(map, robotpos, machines, bins);
-    elapsed_time = [elapsed_time, toc(time)];
-    fprint("Mean elapsed time %d ms", mean(elapsed_time)
+    [xplan, yplan, waypoints, output_time] = goal_planner(map, robotpos, machines, bins);
+    %elapsed_time = [elapsed_time; [toc(time), output_time(1), output_time(2)]];
+    elapsed_time = [elapsed_time; [output_time(3), output_time(1), output_time(2)-output_time(1)]];
+    opened = [opened, output_time(4)];
+    fprintf("Mean elapsed total time %d ms, Iteration: %d\n", [mean(elapsed_time(:,1)), count]);
+    fprintf("Mean elapsed task time %d ms, Iteration: %d\n", [mean(elapsed_time(:,2)), count]);
+    fprintf("Mean elapsed path time %d ms, Iteration: %d\n", [mean(elapsed_time(:,3)), count]);
+    fprintf("Task planner nodes opened %d, Iteration: %d\n", [mean(opened), count]);
     action = [xplan;yplan]';
     % action = [1:1000;1:1000]';
     % binpos = [24,24];
@@ -82,8 +77,8 @@ while(1==1)
                 machines(i,4) = machines(i,4)-depletionRate;
             end
         end
-        %update drawing
-        if(mod(j,5) == 0)
+        %update drawing (currently not drawing anything)
+        if(false)%(mod(j,10)== 0)
             delete(hr);
             hr = text(robotpos(1)+1,robotpos(2)+1,'R','Color', 'm');
             for i= 1:length(machines)
@@ -100,8 +95,9 @@ while(1==1)
         end
     end
     index = intersect(find(machines(:, 1) == waypoints(5)), find( machines(:,2) == waypoints(6)));
-    index
+    index;
     fprintf('picking up from bin B%d at position (%d,%d)\n',[machines(index,3),robotpos(1)+1,robotpos(2)+1])
-    min([machines(index,4)+robot_carrying,1])
-    machines(index,4) = min([machines(index,4)+robot_carrying,1])
+    min([machines(index,4)+robot_carrying,1]);
+    machines(index,4) = min([machines(index,4)+robot_carrying,1]);
 end
+close all;

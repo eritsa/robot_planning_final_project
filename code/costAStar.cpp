@@ -9,7 +9,7 @@ double get_distance(int x0, int y0, int x1, int y1, int x_size, int y_size, doub
 auto startTime = std::chrono::steady_clock::now();
 memset(g, 0, xsize*ysize*sizeof(int));
 memset(closed,0,xsize*ysize*sizeof(bool));
-double eps = 0;
+double eps = 2;
 start = new point(x0,y0,eps);
 goal  = new point(x1,y1,eps);
 // double g[x_size][y_size];
